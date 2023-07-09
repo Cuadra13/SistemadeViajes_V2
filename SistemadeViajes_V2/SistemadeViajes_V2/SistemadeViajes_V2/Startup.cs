@@ -1,4 +1,7 @@
-﻿namespace SistemadeViajes_V2
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+
+namespace SistemadeViajes_V2
 {
     public class Startup
     {
@@ -12,8 +15,14 @@
         public void ConfigureServices(IServiceCollection services)
         {
            services.AddControllers();
+
+            services.AddDbContext<ApplicationDBContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(C =>
+            {
+                C.SwaggerDoc("v1", new OpenApiInfo { Title = "SistemadeViajes", Version = "v1" });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
