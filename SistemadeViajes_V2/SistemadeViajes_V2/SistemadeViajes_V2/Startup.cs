@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 namespace SistemadeViajes_V2
 {
@@ -14,7 +15,8 @@ namespace SistemadeViajes_V2
 
         public void ConfigureServices(IServiceCollection services)
         {
-           services.AddControllers();
+           services.AddControllers().AddJsonOptions(x => 
+           x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
             services.AddDbContext<ApplicationDBContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
