@@ -7,7 +7,7 @@ namespace SistemadeViajes_V2
     {
         public Startup(IConfiguration configuration)
         {
-            configuration = configuration;
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
