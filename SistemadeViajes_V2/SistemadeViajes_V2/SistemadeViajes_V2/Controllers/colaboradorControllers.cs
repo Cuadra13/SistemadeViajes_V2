@@ -22,6 +22,25 @@ namespace SistemadeViajes_V2.Controllers
             return await context.colaborador.Include(x => x.sucursales).ToListAsync();
         }
 
+        [HttpGet("Primero")]
+        public async Task<ActionResult<colaborador>> PrimerColaborador()
+        {
+            return await context.colaborador.FirstOrDefaultAsync();
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<colaborador>> Get (int id)
+        {
+            var colaborador =  await context.colaborador.FirstOrDefaultAsync(x => x.id == id);
+            if(colaborador == null)
+            {
+                return NotFound();
+            }
+            return colaborador;
+            
+        }
+
+
         [HttpPost]
         public async Task<ActionResult> Post(colaborador colaborador)
         {
