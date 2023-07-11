@@ -1,61 +1,68 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemadeViajes_V2.Entidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+
 namespace SistemadeViajes_V2.Controllers
 {
+
+
     [ApiController]
     [Route("api/colaborador")]
-    public class colaboradorControllers : ControllerBase
+
+
+    public class ColaboradorController : ControllerBase
     {
+
+
         private readonly ApplicationDBContext context;
-        public colaboradorControllers(ApplicationDBContext context)
+
+        public ColaboradorController(ApplicationDBContext context)
         {
             this.context = context;
         }
+
         [HttpGet]
         public async Task<ActionResult<List<colaborador>>> Get()
         {
-            return await context.colaborador.Include(x => x.sucursales).ToListAsync();
-        }
-
-        [HttpGet("Primero")]
-        public async Task<ActionResult<colaborador>> PrimerColaborador()
-        {
-            return await context.colaborador.FirstOrDefaultAsync();
+            return await context.colaborador.ToListAsync();
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<colaborador>> Get (int id)
+        public async Task<ActionResult<colaborador>> Get(int id)
         {
-            var colaborador =  await context.colaborador.FirstOrDefaultAsync(x => x.id == id);
-            if(colaborador == null)
+            var colaborador = await context.colaborador
+                .FirstOrDefaultAsync(x => x.id == id);
+
+            if (colaborador == null)
             {
                 return NotFound();
             }
-            return colaborador;
-            
-        }
 
+            return colaborador;
+        }
 
         [HttpPost]
         public async Task<ActionResult> Post(colaborador colaborador)
         {
+            if (colaborador.Perfil != "Gerente de tienda")
+            {
+                return BadRequest("Solo los usuarios con perfil 'Gerente de tienda' pueden registrar colaboradores.");
+            }
+
             context.Add(colaborador);
-                await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return Ok();
         }
 
-        [HttpPut("{id:int}")] //api/colaborador/algo
-        public async Task<ActionResult> Put (colaborador colaborador, int id)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(colaborador colaborador, int id)
         {
-            if(colaborador.id!= id)
+            if (colaborador.id != id)
             {
                 return BadRequest("El id del colaborador no coincide con el id de la URL");
             }
+
             context.Update(colaborador);
             await context.SaveChangesAsync();
             return Ok();
@@ -64,15 +71,16 @@ namespace SistemadeViajes_V2.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var existe = await context.colaborador.AnyAsync(x => x.id == id);
-            if (!existe)
+            var colaborador = await context.colaborador.FindAsync(id);
+
+            if (colaborador == null)
             {
                 return NotFound();
             }
-            context.Remove(new colaborador() { id = id });
+
+            context.Remove(colaborador);
             await context.SaveChangesAsync();
             return Ok();
         }
     }
-
 }
