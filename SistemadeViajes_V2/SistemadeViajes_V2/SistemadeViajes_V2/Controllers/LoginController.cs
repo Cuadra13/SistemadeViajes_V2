@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using SistemadeViajes_V2.Entidades;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,14 +12,7 @@ using System.Threading.Tasks;
 
 namespace SistemadeViajes_V2.Controllers
 {
-    // 1. Define el modelo de usuario
-    public class User
-    {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        // Otras propiedades relevantes
-    }
+    // Define el modelo de usuario
 
     public class LoginModel
     {
@@ -27,31 +21,25 @@ namespace SistemadeViajes_V2.Controllers
     }
 
 
-    // 2. Crea el contexto de base de datos
-    public class AppDbContext : DbContext
-    {
-        public DbSet<User> Users { get; set; }
+    [ApiController]
+    [Route("api/Login")]
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-            // Otras configuraciones
-        }
-    }
-
-    // 3. Implementa la autenticación en el controlador
+    // Implementa la autenticación en el controlador
     public class LoginController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly ApplicationDBContext context;
 
-        public LoginController(AppDbContext dbContext)
+        public LoginController(ApplicationDBContext context)
         {
-            _dbContext = dbContext;
+            this.context = context;
         }
+
+
 
         [HttpPost]
         public IActionResult Login(LoginModel model)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
+            var user = context.Users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
 
             if (user == null)
             {

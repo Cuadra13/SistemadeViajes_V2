@@ -12,5 +12,9 @@ namespace SistemadeViajes_V2
 
         public DbSet<colaborador> colaborador { get; set; }
         public DbSet<sucursales> sucursales { get; set; }
+        public DbSet<Viaje> Viajes{ get; set; }
+        public DbSet<User> Users { get; set; }
+
+        }
     }
-}
+

@@ -6,6 +6,7 @@ namespace SistemadeViajes_V2.Entidades
 {
     public class Viaje
     {
+
         [Key]
         public int Id { get; set; }
 
@@ -18,5 +19,7 @@ namespace SistemadeViajes_V2.Entidades
         public colaborador Colaborador { get; set; }
 
         public string Transportista { get; set; }
+
+        public double Distancia { get; set; }
     }
 }
